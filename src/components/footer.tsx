@@ -1,52 +1,32 @@
-import { Github, Twitter, Linkedin } from "lucide-react";
-import Link from "next/link";
-import { Button } from "./ui/button";
+"use client";
 
-const Footer = () => {
+import Link from "next/link";
+import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+
+export default function Footer() {
   return (
-    <footer className="bg-background border-t border-border/50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="text-center md:text-left">
-            <Link href="/" className="text-2xl font-headline font-bold">
-              FestVerse
-            </Link>
-            <p className="text-muted-foreground mt-2">
-              The ultimate college fest experience.
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-             <p className="font-semibold mb-2">Quick Links</p>
-            <div className="flex gap-4">
-                <Button variant="link" asChild className="text-muted-foreground"><Link href="/#schedule">Schedule</Link></Button>
-                <Button variant="link" asChild className="text-muted-foreground"><Link href="/#faq">FAQ</Link></Button>
-                <Button variant="link" asChild className="text-muted-foreground"><Link href="/register">Register</Link></Button>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" asChild>
-                <Link href="#" aria-label="Twitter">
-                    <Twitter className="h-5 w-5" />
-                </Link>
-            </Button>
-            <Button variant="ghost" size="icon" asChild>
-                <Link href="#" aria-label="GitHub">
-                    <Github className="h-5 w-5" />
-                </Link>
-            </Button>
-            <Button variant="ghost" size="icon" asChild>
-                <Link href="#" aria-label="LinkedIn">
-                    <Linkedin className="h-5 w-5" />
-                </Link>
-            </Button>
-          </div>
+    <footer className="w-full bg-background py-12 border-t border-border mt-12">
+      <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="text-center sm:text-left">
+          <h3 className="font-bold text-lg">FestVerse 2024</h3>
+          <p className="text-sm text-muted-foreground">Where Innovation Meets Celebration</p>
+          <p className="text-xs text-muted-foreground mt-1">&copy; {new Date().getFullYear()} FestVerse. All rights reserved.</p>
         </div>
-        <div className="mt-8 border-t border-border/50 pt-4 text-center text-muted-foreground text-sm">
-          <p>&copy; {new Date().getFullYear()} FestVerse. All rights reserved.</p>
+        <div className="flex space-x-4">
+          <Link href="https://facebook.com" target="_blank" className="hover:text-primary transition-colors">
+            <Facebook className="w-5 h-5" />
+          </Link>
+          <Link href="https://twitter.com" target="_blank" className="hover:text-primary transition-colors">
+            <Twitter className="w-5 h-5" />
+          </Link>
+          <Link href="https://instagram.com" target="_blank" className="hover:text-primary transition-colors">
+            <Instagram className="w-5 h-5" />
+          </Link>
+          <Link href="https://linkedin.com" target="_blank" className="hover:text-primary transition-colors">
+            <Linkedin className="w-5 h-5" />
+          </Link>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}
