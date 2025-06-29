@@ -131,26 +131,19 @@ toast({
   variant: "destructive",
   title: "Registration Failed",
   description: result.message,
-  duration: 5000,
-  action: {
-    label: "✕",
-    onClick: () => toast.dismiss(),
-  },
+  duration: 5000, // this will auto-dismiss the toast
 });
+
 
 
 
     } catch (error) {
         console.error("Submission error:", error);
-        toast({
+      toast({
   variant: "destructive",
   title: "An unexpected error occurred",
   description: "Please try again later.",
   duration: 5000,
-  action: {
-    label: "✕",
-    onClick: () => toast.dismiss(),
-  },
 });
 
     } finally {
@@ -195,7 +188,7 @@ toast({
               email: formData.email,
               college: formData.college,
               ticketId,
-              eventId: "FV2024",
+              eventId: "FV2025",
             })}
             ticketId={ticketId}
           />

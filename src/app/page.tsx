@@ -30,16 +30,16 @@ export default function Home() {
   }, []);
 
   const scheduleItems = [
-    { time: "9:00 AM", title: "Inauguration", description: "Kick-off ceremony with guest speakers.", image: "https://placehold.co/400x300.png", hint: "stage ceremony" },
-    { time: "10:00 AM", title: "Problem Statement Reveal", description: "Hackathon themes and problems are announced.", image: "https://placehold.co/400x300.png", hint: "presentation screen" },
-    { time: "10:30 AM", title: "Codeathon Round 1", description: "First round of the coding challenge begins.", image: "https://placehold.co/400x300.png", hint: "students coding" },
-    { time: "1:00 PM", title: "Lunch Break", description: "Recharge with a delicious meal.", image: "https://placehold.co/400x300.png", hint: "food buffet" },
-    { time: "2:00 PM", title: "Workshop Session", description: "Learn from industry experts.", image: "https://placehold.co/400x300.png", hint: "workshop presentation" },
-    { time: "4:00 PM", title: "Codeathon Round 2", description: "The second round of the coding challenge.", image: "https://placehold.co/400x300.png", hint: "focused coder" },
-    { time: "7:00 PM", title: "DJ Night", description: "Unwind and dance to the beats.", image: "https://placehold.co/400x300.png", hint: "dj party concert" },
-    { time: "9:00 PM", title: "Campfire & Midnight Snacks", description: "Networking and fun under the stars.", image: "https://placehold.co/400x300.png", hint: "campfire students" },
-    { time: "11:00 PM", title: "Final Pitching", description: "Top teams present their solutions.", image: "https://placehold.co/400x300.png", hint: "startup pitch" },
-    { time: "12:00 AM", title: "Closing Ceremony", description: "Prize distribution and closing remarks.", image: "https://placehold.co/400x300.png", hint: "award ceremony" },
+    { time: "9:00 AM", title: "Inauguration", description: "Kick-off ceremony with guest speakers.", image: "https://i.ibb.co/kt7LkVr/IMG-8694.jpg", hint: "stage ceremony" },
+    { time: "10:00 AM", title: "Problem Statement Reveal", description: "Hackathon themes and problems are announced.", image: "https://i.ibb.co/zhZ94c6R/IMG-8935.jpg", hint: "presentation screen" },
+    { time: "10:30 AM", title: "Codeathon Round 1", description: "First round of the coding challenge begins.", image: "https://i.ibb.co/jZh9D5Xg/IMG-8975.jpg", hint: "students coding" },
+    { time: "1:00 PM", title: "Lunch Break", description: "Recharge with a delicious meal.", image: "https://i.ibb.co/RG99w7NZ/IMG-8702.jpg", hint: "food buffet" },
+    { time: "2:00 PM", title: "Workshop Session", description: "Learn from industry experts.", image: "https://i.ibb.co/zhZ94c6R/IMG-8935.jpg", hint: "workshop presentation" },
+    { time: "4:00 PM", title: "Codeathon Round 2", description: "The second round of the coding challenge.", image: "https://i.ibb.co/TMG6y2BV/IMG-8890.jpg", hint: "focused coder" },
+    { time: "7:00 PM", title: "DJ Night", description: "Unwind and dance to the beats.", image: "https://i.ibb.co/27CFNhqH/IMG-0042.jpg", hint: "dj party concert" },
+    { time: "9:00 PM", title: "Campfire & Midnight Snacks", description: "Networking and fun under the stars.", image: "https://i.ibb.co/27Ctd0C8/IMG-9008.jpg", hint: "campfire students" },
+    { time: "11:00 PM", title: "Final Pitching", description: "Top teams present their solutions.", image: "https://i.ibb.co/VW9JqB4S/IMG-0172.jpg", hint: "startup pitch" },
+    { time: "12:00 AM", title: "Closing Ceremony", description: "Prize distribution and closing remarks.", image: "https://i.ibb.co/v4BZShss/IMG-8781-1.jpg", hint: "award ceremony" },
   ];
 
   const highlights = [
@@ -90,7 +90,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-background/1 "></div>
         <div className="relative z-20 p-4">
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-headline font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-accent animate-gradient-x">
-            FestVerse 2024
+            FestVerse 2025
           </h1>
           <p className="mt-4 text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             Where Innovation Meets Celebration. Join the biggest hackathon and college fest of the year!
@@ -123,52 +123,66 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Schedule */}
-        <section id="schedule" className="py-20">
-          <h2 className="text-4xl font-headline font-bold text-center mb-12">Event Schedule</h2>
-          <div className="relative space-y-8">
-            {scheduleItems.map((item, i) => (
-              <div key={i} className="relative md:space-y-12">
-                <div className="hidden md:flex items-center w-full my-6">
-                  <div className={cn("w-5/12", i % 2 === 0 ? "text-right pr-8" : "pl-8 order-3")}>
-                    <p className="text-primary font-bold">{item.time}</p>
-                    <h3 className="font-headline text-xl font-semibold mt-1">{item.title}</h3>
-                    <p className="text-muted-foreground text-sm">{item.description}</p>
-                  </div>
-                  <div className="w-2/12 flex justify-center order-2">
-                    <TooltipProvider>
-                      <Tooltip delayDuration={100}>
-                        <TooltipTrigger asChild>
-                          <div className="w-10 h-10 bg-background border-2 border-primary rounded-full z-10 flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
-                            <CalendarDays className="w-5 h-5 text-primary" />
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent className="w-80 p-0 border-transparent bg-transparent shadow-xl">
-                          <Image src={item.image} width={400} height={300} alt={item.title} className="rounded-md" data-ai-hint={item.hint} />
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                  <div className="w-5/12 order-1" />
-                </div>
+        <section id="schedule" className="py-20 relative">
+  <h2 className="text-4xl font-headline font-bold text-center mb-12">Event Schedule</h2>
 
-                <div className="flex md:hidden items-start gap-4 ml-10 mb-8">
-                  <div className="absolute -left-[1px] top-1 z-10">
-                    <div className="w-8 h-8 bg-background border-2 border-primary rounded-full flex items-center justify-center">
-                      <CalendarDays className="w-5 h-5 text-primary" />
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-primary font-bold">{item.time}</p>
-                    <h3 className="font-headline text-lg sm:text-xl font-semibold mt-1">{item.title}</h3>
-                    <p className="text-muted-foreground text-sm mb-2">{item.description}</p>
-                    {/* Remove image on mobile */}
-                  </div>
-                </div>
-              </div>
-            ))}
+  <div className="relative flex flex-col space-y-16">
+    {/* Vertical timeline line */}
+    <div className="hidden md:block absolute left-1/2 top-0 w-1 h-full bg-primary/20 z-0" />
+
+    {scheduleItems.map((item, i) => (
+      <div
+        key={i}
+        className="relative flex flex-col md:flex-row md:items-center md:justify-between w-full"
+      >
+        {/* Left content */}
+        <div className={`hidden md:block w-5/12 ${i % 2 === 0 ? "text-right pr-8" : "order-3 text-left pl-8"}`}>
+          <p className="text-primary font-bold">{item.time}</p>
+          <h3 className="font-headline text-xl font-semibold mt-1">{item.title}</h3>
+          <p className="text-muted-foreground text-sm">{item.description}</p>
+        </div>
+
+        {/* Center icon on timeline */}
+        <div className="flex justify-center items-center md:absolute left-1/2 transform -translate-x-1/2 z-10 group relative">
+  <div className="w-12 h-12 bg-background border-2 border-primary rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
+    <CalendarDays className="w-6 h-6 text-primary" />
+  </div>
+
+  {/* Hover image */}
+  <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[110%] pointer-events-none z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 min-w-[400px]">
+  <Image
+    src={item.image}
+    width={400}
+    height={300}
+    alt={item.title}
+    className="w-full h-auto rounded-lg shadow-lg border border-primary bg-background"
+    data-ai-hint={item.hint}
+  />
+</div>
+
+</div>
+
+
+        {/* Right content */}
+        <div className={`hidden md:block w-5/12 ${i % 2 === 0 ? "" : "order-1"}`} />
+
+        {/* Mobile: stacked timeline items */}
+        <div className="flex md:hidden items-start gap-4 ml-10">
+          <div className="absolute -left-[1px] top-1 z-10">
+            <div className="w-8 h-8 bg-background border-2 border-primary rounded-full flex items-center justify-center">
+              <CalendarDays className="w-5 h-5 text-primary" />
+            </div>
           </div>
-        </section>
+          <div className="flex-1">
+            <p className="text-primary font-bold">{item.time}</p>
+            <h3 className="font-headline text-lg sm:text-xl font-semibold mt-1">{item.title}</h3>
+            <p className="text-muted-foreground text-sm mb-2">{item.description}</p>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
 
         {/* Prizes Section */}
         <section id="prizes" className="py-20 text-center">
@@ -242,14 +256,14 @@ export default function Home() {
                 </div>
                 <div className="flex items-center gap-2 mt-2 text-muted-foreground">
                   <CalendarDays className="w-5 h-5" />
-                  <p>October 26-27, 2024</p>
+                  <p>October 26-27, 2025</p>
                 </div>
                 <p className="mt-4 text-muted-foreground">
                   Our state-of-the-art auditorium is equipped with high-speed internet, comfortable seating, and a massive stage for all the action. Located in the heart of the campus, it's easily accessible.
                 </p>
               </div>
               <div>
-                <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="Venue map" className="w-full h-full object-cover" data-ai-hint="college campus" />
+                <Image src="https://i.ibb.co/yFK2Ydyh/Screenshot-13.png" width={600} height={400} alt="Venue map" className="w-full h-full object-cover" data-ai-hint="college campus" />
               </div>
             </div>
           </Card>
