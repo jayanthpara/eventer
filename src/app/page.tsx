@@ -92,10 +92,18 @@ export default function Home() {
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-headline font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-accent animate-gradient-x">
             FestVerse 2025
           </h1>
-          <p className="mt-4 text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Where Innovation Meets Celebration. Join the biggest hackathon and college fest of the year!
-          </p>
-          <div className="mt-8">{targetDate && <CountdownTimer targetDate={targetDate} />}</div>
+          <p className="mt-2 text-sm sm:text-base md:text-xl text-muted-foreground max-w-2xl mx-auto">
+  Where Innovation Meets Celebration. Join the biggest hackathon and college fest of the year!
+</p>
+
+          <div className="mt-6 sm:mt-8">
+  {targetDate && (
+    <div className="max-w-xs sm:max-w-md mx-auto text-lg sm:text-2xl md:text-4xl">
+      <CountdownTimer targetDate={targetDate} />
+    </div>
+  )}
+</div>
+
           <div className="mt-8 flex justify-center gap-4">
             <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg px-8 py-6 rounded-full transition-transform transform hover:scale-105">
               <Link href="/register">Register Now</Link>
@@ -123,7 +131,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="schedule" className="py-20 relative">
+        <section id="schedule" className="py-20 relative ">
   <h2 className="text-4xl font-headline font-bold text-center mb-12">Event Schedule</h2>
 
   <div className="relative flex flex-col space-y-16">
@@ -143,7 +151,7 @@ export default function Home() {
         </div>
 
         {/* Center icon on timeline */}
-        <div className="flex justify-center items-center md:absolute left-1/2 transform -translate-x-1/2 z-10 group relative">
+        <div className="hidden md:flex justify-center items-center md:absolute left-1/2 transform -translate-x-1/2 z-10 group relative">
   <div className="w-12 h-12 bg-background border-2 border-primary rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
     <CalendarDays className="w-6 h-6 text-primary" />
   </div>
@@ -167,18 +175,25 @@ export default function Home() {
         <div className={`hidden md:block w-5/12 ${i % 2 === 0 ? "" : "order-1"}`} />
 
         {/* Mobile: stacked timeline items */}
-        <div className="flex md:hidden items-start gap-4 ml-10">
-          <div className="absolute -left-[1px] top-1 z-10">
-            <div className="w-8 h-8 bg-background border-2 border-primary rounded-full flex items-center justify-center">
-              <CalendarDays className="w-5 h-5 text-primary" />
-            </div>
-          </div>
-          <div className="flex-1">
-            <p className="text-primary font-bold">{item.time}</p>
-            <h3 className="font-headline text-lg sm:text-xl font-semibold mt-1">{item.title}</h3>
-            <p className="text-muted-foreground text-sm mb-2">{item.description}</p>
-          </div>
-        </div>
+        <div className="flex md:hidden items-start relative pl-8">
+  {/* Vertical line (mobile only) */}
+  <div className="absolute left-3 top-0 bottom-0 w-px bg-primary/30 z-0" />
+  
+  {/* Icon on the line */}
+  <div className="relative z-10">
+    <div className="w-8 h-8 bg-background border-2 border-primary rounded-full flex items-center justify-center">
+      <CalendarDays className="w-5 h-5 text-primary" />
+    </div>
+  </div>
+  
+  {/* Details to the right */}
+  <div className="flex-1 pl-4">
+    <p className="text-primary font-bold">{item.time}</p>
+    <h3 className="font-headline text-lg sm:text-xl font-semibold mt-1">{item.title}</h3>
+    <p className="text-muted-foreground text-sm mb-2">{item.description}</p>
+  </div>
+</div>
+
       </div>
     ))}
   </div>
@@ -187,32 +202,33 @@ export default function Home() {
         {/* Prizes Section */}
         <section id="prizes" className="py-20 text-center">
             <h2 className="text-4xl font-headline font-bold mb-12">Prizes & Recognition</h2>
-            <div className="flex flex-col md:flex-row justify-center items-end gap-8 md:gap-4">
-                <div className="podium-item order-2 md:order-1 w-full max-w-xs mx-auto md:w-1/3">
-                    <LaurelWreath colorClass="text-gray-300" />
-                    <div className="podium-base h-32 bg-foreground/70 shadow-lg">2</div>
-                    <div className="mt-4">
-                      <p className="text-3xl font-bold">₹50,000</p>
-                      <p className="text-muted-foreground">and cool swags</p>
-                    </div>
-                </div>
-                <div className="podium-item order-1 md:order-2 w-full max-w-xs mx-auto md:w-1/3">
-                    <LaurelWreath colorClass="text-yellow-400" />
-                    <div className="podium-base h-48 bg-foreground shadow-2xl">1</div>
-                     <div className="mt-4">
-                      <p className="text-4xl font-bold text-primary">₹1,00,000</p>
-                      <p className="text-muted-foreground">and amazing goodies</p>
-                    </div>
-                </div>
-                <div className="podium-item order-3 md:order-3 w-full max-w-xs mx-auto md:w-1/3">
-                    <LaurelWreath colorClass="text-orange-400" />
-                    <div className="podium-base h-24 bg-foreground/50 shadow-md">3</div>
-                     <div className="mt-4">
-                      <p className="text-2xl font-bold">₹25,000</p>
-                      <p className="text-muted-foreground">and exclusive merch</p>
-                    </div>
-                </div>
-            </div>
+            <div className="w-full flex flex-row justify-center items-end gap-2 sm:gap-6 overflow-x-auto px-2 py-6">
+  {/* 2nd Prize */}
+  <div className="flex flex-col items-center">
+    <div className="bg-gray-300 rounded-lg w-24 h-20 sm:w-44 sm:h-36 flex items-center justify-center text-2xl sm:text-4xl font-bold text-gray-700 mb-2">
+      2
+    </div>
+    <div className="text-base sm:text-xl font-bold text-white">₹50,000</div>
+    <div className="text-xs sm:text-base text-gray-400"></div>
+  </div>
+  {/* 1st Prize (center, bigger) */}
+  <div className="flex flex-col items-center">
+    <div className="bg-gray-100 rounded-lg w-28 h-28 sm:w-56 sm:h-56 flex items-center justify-center text-3xl sm:text-6xl font-bold text-gray-800 mb-2">
+      1
+    </div>
+    <div className="text-lg sm:text-2xl font-bold text-purple-500">₹1,00,000</div>
+    <div className="text-xs sm:text-base text-gray-400"></div>
+  </div>
+  {/* 3rd Prize */}
+  <div className="flex flex-col items-center">
+    <div className="bg-gray-300 rounded-lg w-24 h-20 sm:w-44 sm:h-36 flex items-center justify-center text-2xl sm:text-4xl font-bold text-gray-700 mb-2">
+      3
+    </div>
+    <div className="text-base sm:text-xl font-bold text-white">₹25,000</div>
+    <div className="text-xs sm:text-base text-gray-400"></div>
+  </div>
+</div>
+
         </section>
         
         {/* Opportunities Section */}
@@ -234,7 +250,7 @@ export default function Home() {
         </section>
 
         {/* Testimonials Section */}
-        <section id="testimonials" className="py-20">
+        <section id="testimonials" className="py-20 hidden sm:block">
           <h2 className="text-4xl font-headline font-bold text-center mb-12">What Our Alums Say</h2>
             <Card className="bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-8">
@@ -252,7 +268,7 @@ export default function Home() {
                 <h3 className="font-headline text-3xl font-bold">University Auditorium</h3>
                 <div className="flex items-center gap-2 mt-4 text-muted-foreground">
                   <MapPin className="w-5 h-5" />
-                  <p>123 University Road, Tech City, India</p>
+                  <p>MR University , Hyderabad, India</p>
                 </div>
                 <div className="flex items-center gap-2 mt-2 text-muted-foreground">
                   <CalendarDays className="w-5 h-5" />

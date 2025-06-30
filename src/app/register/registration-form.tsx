@@ -16,21 +16,61 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Camera, Loader2, RefreshCw } from "lucide-react";
+import { Camera, Loader2, RefreshCw, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { saveRegistration } from "@/actions/save-registration";
 import ETicket from "@/components/e-ticket";
-import { motion, AnimatePresence } from "framer-motion"; // 👈 Added for animation
+import { motion, AnimatePresence } from "framer-motion";
+
+// Print styles to hide everything except the ticket
+const printStyles = `
+  @media print {
+    /* Hide everything by default */
+    body * {
+      visibility: hidden;
+    }
+    
+    /* Show only the ticket container and its children */
+    .print-ticket, .print-ticket * {
+      visibility: visible;
+    }
+    
+    /* Position the ticket at the top of the page */
+    .print-ticket {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+    
+    /* Hide browser headers/footers */
+    @page {
+      margin: 0;
+      size: auto;
+    }
+    
+    /* Hide other elements that might interfere */
+    .no-print {
+      display: none !important;
+    }
+    
+    /* Ensure ticket content is properly sized for print */
+    .print-ticket {
+      transform: none !important;
+      max-width: none !important;
+      box-shadow: none !important;
+    }
+  }
+`;
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email." }),
   phone: z.string().regex(/^\d{10}$/, { message: "Please enter a valid 10-digit phone number." }),
   college: z.string().min(3, { message: "College name is required." }),
-  photo: z.string().optional(),  // ✅ photo is now optional
+  photo: z.string().optional(),
 });
-
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -38,12 +78,15 @@ export default function RegistrationForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState<FormData | null>(null);
+  const [showCamera, setShowCamera] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [generatedPhotoUrl, setGeneratedPhotoUrl] = useState<string | null>(null);
   const [ticketId, setTicketId] = useState<string>("");
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { toast } = useToast();
 
@@ -58,41 +101,85 @@ export default function RegistrationForm() {
     },
   });
 
-  useEffect(() => {
-    const getCameraPermission = async () => {
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-          setHasCameraPermission(true);
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
-        } catch (error) {
-          console.error("Error accessing camera:", error);
-          setHasCameraPermission(false);
-          toast({
-            variant: "destructive",
-            title: "Camera Access Denied",
-            description: "Please enable camera permissions in your browser settings to continue.",
-          });
-        }
-      } else {
-        setHasCameraPermission(false);
-         toast({
-            variant: "destructive",
-            title: "Camera Not Supported",
-            description: "Your browser does not support camera access.",
-          });
-      }
+  // Handle file upload
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        variant: "destructive",
+        title: "Invalid File Type",
+        description: "Please upload a JPEG, PNG, or WebP image.",
+      });
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      toast({
+        variant: "destructive",
+        title: "File Too Large",
+        description: "Please upload an image smaller than 5MB.",
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      form.setValue("photo", dataUrl, { shouldValidate: true });
+      setShowCamera(false); // Hide camera if it was open
     };
-    
+    reader.readAsDataURL(file);
+  };
+
+  // Camera functions
+  const getCameraPermission = async () => {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        setHasCameraPermission(true);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error("Error accessing camera:", error);
+        setHasCameraPermission(false);
+        toast({
+          variant: "destructive",
+          title: "Camera Access Denied",
+          description: "Please enable camera permissions in your browser settings to continue.",
+        });
+      }
+    } else {
+      setHasCameraPermission(false);
+      toast({
+        variant: "destructive",
+        title: "Camera Not Supported",
+        description: "Your browser does not support camera access.",
+      });
+    }
+  };
+
+  const startCamera = () => {
+    setShowCamera(true);
     if (hasCameraPermission === null) {
       getCameraPermission();
     }
-  }, [hasCameraPermission, toast]);
+  };
 
-
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const stopCamera = () => {
+    setShowCamera(false);
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach(track => track.stop());
+    }
+    setHasCameraPermission(null);
+  };
 
   const takePhoto = () => {
     if (!videoRef.current || !canvasRef.current) return;
@@ -104,50 +191,48 @@ export default function RegistrationForm() {
     context?.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
     const dataUrl = canvas.toDataURL("image/jpeg");
     form.setValue("photo", dataUrl, { shouldValidate: true });
+    stopCamera();
   };
   
-  const retakePhoto = () => {
+  const removePhoto = () => {
     form.setValue("photo", "", { shouldValidate: true });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    stopCamera();
   };
 
   const onSubmit = async (values: FormData) => {
     setIsLoading(true);
     try {
-        const result = await saveRegistration(values);
+      const result = await saveRegistration(values);
 
-        if (result.success && result.photoUrl) {
-  setFormData(values);
-  setGeneratedPhotoUrl(result.photoUrl);
-  setTicketId(`FV24-${Math.random().toString(36).substring(2, 8).toUpperCase()}`);
-  setIsSubmitted(true);
+      if (result.success) {
+        setFormData(values);
+        setGeneratedPhotoUrl(result.photoUrl || "/https://via.placeholder.com/400x300?text=ID+Photo");
+        setTicketId(`FV24-${Math.random().toString(36).substring(2, 8).toUpperCase()}`);
+        setIsSubmitted(true);
+        setShowSuccessMessage(true);
+        setTimeout(() => setShowSuccessMessage(false), 5000);
+        return;
+      }
 
-  setShowSuccessMessage(true);
-  setTimeout(() => setShowSuccessMessage(false), 5000);
-  return; // done, exit the function
-}
-
-// no else needed, just write this directly:
-toast({
-  variant: "destructive",
-  title: "Registration Failed",
-  description: result.message,
-  duration: 5000, // this will auto-dismiss the toast
-});
-
-
-
-
-    } catch (error) {
-        console.error("Submission error:", error);
       toast({
-  variant: "destructive",
-  title: "An unexpected error occurred",
-  description: "Please try again later.",
-  duration: 5000,
-});
-
+        variant: "destructive",
+        title: "Registration Failed",
+        description: result.message,
+        duration: 5000,
+      });
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast({
+        variant: "destructive",
+        title: "An unexpected error occurred",
+        description: "Please try again later.",
+        duration: 5000,
+      });
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -155,44 +240,48 @@ toast({
 
   return (
     <>
+      {/* Print Styles */}
+      <style jsx global>{printStyles}</style>
+      
       {/* Animated Thank You Overlay */}
       <AnimatePresence>
-  {showSuccessMessage && (
-    <motion.div
-      initial={{ x: "-100%", opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: "-100%", opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="fixed top-4 left-4 z-50 bg-green-600 text-white px-6 py-4 rounded shadow-lg flex items-center justify-between w-[300px]"
-    >
-      <span>✅ Thank you! Your registration was successful.</span>
-      <button
-        className="ml-4 text-white font-bold"
-        onClick={() => setShowSuccessMessage(false)}
-      >
-        ✕
-      </button>
-    </motion.div>
-  )}
-</AnimatePresence>
-
+        {showSuccessMessage && (
+          <motion.div
+            initial={{ x: "-100%", opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: "-100%", opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed top-4 left-4 z-50 bg-green-600 text-white px-6 py-4 rounded shadow-lg flex items-center justify-between w-[300px]"
+          >
+            <span>✅ Thank you! Your registration was successful.</span>
+            <button
+              className="ml-4 text-white font-bold"
+              onClick={() => setShowSuccessMessage(false)}
+            >
+              ✕
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {isSubmitted && formData && generatedPhotoUrl ? (
         <div className="space-y-6">
-          <ETicket
-            name={formData.name}
-            college={formData.college}
-            photoUrl={generatedPhotoUrl}
-            qrData={JSON.stringify({
-              name: formData.name,
-              email: formData.email,
-              college: formData.college,
-              ticketId,
-              eventId: "FV2025",
-            })}
-            ticketId={ticketId}
-          />
-          <div className="text-center">
+          <div className="print-ticket">
+            <ETicket
+              name={formData.name}
+              college={formData.college}
+              photoUrl={generatedPhotoUrl}
+              qrData={JSON.stringify({
+                name: formData.name,
+                email: formData.email,
+                college: formData.college,
+                ticketId,
+                eventId: "FV2025",
+              })}
+              ticketId={ticketId}
+            />
+          </div>
+          <div className="text-center no-print">
             <Button onClick={() => window.print()}>Print E-Ticket</Button>
           </div>
         </div>
@@ -200,7 +289,7 @@ toast({
         <Card className="bg-card/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="font-headline">Participant Details</CardTitle>
-            <CardDescription>Enter your details and take a photo for your event pass.</CardDescription>
+            <CardDescription>Enter your details and upload a photo for your event pass.</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -245,54 +334,130 @@ toast({
                     <FormLabel>Event Pass Photo</FormLabel>
                     <Card>
                       <CardContent className="p-4 space-y-4">
-                        {hasCameraPermission === false && (
-                          <Alert variant="destructive">
-                            <Camera className="h-4 w-4" />
-                            <AlertTitle>Camera Access Required</AlertTitle>
-                            <AlertDescription>
-                              Please allow camera access in your browser to take a photo. You may need to refresh the page after granting permission.
-                            </AlertDescription>
-                          </Alert>
-                        )}
-                        {hasCameraPermission === null && (
-                           <div className="flex items-center justify-center p-8 space-x-2 text-muted-foreground">
-                            <Loader2 className="h-5 w-5 animate-spin" />
-                            <span>Initializing Camera...</span>
-                          </div>
-                        )}
-                        {hasCameraPermission && (
-                          <div className="space-y-4">
-                            <div className="relative w-full aspect-video rounded-md overflow-hidden bg-muted">
-                               {watchedPhoto ? (
-                                  <Image src={watchedPhoto} alt="Your photo" layout="fill" objectFit="cover" />
-                               ) : (
-                                  <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
-                               )}
-                               <div className="absolute inset-0 bg-black/10"></div>
+                        {/* Photo Display Area */}
+                        <div className="relative w-full aspect-video rounded-md overflow-hidden bg-muted border-2 border-dashed border-gray-300">
+                          {watchedPhoto ? (
+                            <div className="relative w-full h-full">
+                              <Image 
+                                src={watchedPhoto} 
+                                alt="Your photo" 
+                                layout="fill" 
+                                objectFit="cover" 
+                                className="rounded-md"
+                              />
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                className="absolute top-2 right-2"
+                                onClick={removePhoto}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
                             </div>
-                            <div className="flex justify-center gap-4">
-                                {watchedPhoto ? (
-                                    <Button type="button" variant="outline" onClick={retakePhoto}>
-                                        <RefreshCw className="mr-2" /> Retake Photo
-                                    </Button>
-                                ) : (
-                                    <Button type="button" onClick={takePhoto} disabled={!hasCameraPermission}>
-                                        <Camera className="mr-2" /> Take Photo
-                                    </Button>
-                                )}
+                          ) : showCamera && hasCameraPermission ? (
+                            <video 
+                              ref={videoRef} 
+                              className="w-full h-full object-cover" 
+                              autoPlay 
+                              muted 
+                              playsInline 
+                            />
+                          ) : (
+                            <div className="flex flex-col items-center justify-center h-full text-gray-500">
+                              <Upload className="h-12 w-12 mb-2" />
+                              <p className="text-center">Upload your photo here</p>
+                              <p className="text-sm text-gray-400">JPEG, PNG, or WebP (Max 5MB)</p>
                             </div>
-                          </div>
-                        )}
+                          )}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-col sm:flex-row justify-center gap-3">
+                          {!watchedPhoto && !showCamera && (
+                            <>
+                              {/* Primary Upload Button */}
+                              <Button type="button" onClick={() => fileInputRef.current?.click()} className="flex-1 sm:flex-none">
+                                <Upload className="mr-2 h-4 w-4" />
+                                Upload Photo
+                              </Button>
+                              
+                              {/* Secondary Camera Button */}
+                              <Button type="button" variant="outline" onClick={startCamera} className="flex-1 sm:flex-none">
+                                <Camera className="mr-2 h-4 w-4" />
+                                Use Camera
+                              </Button>
+                            </>
+                          )}
+
+                          {showCamera && hasCameraPermission && !watchedPhoto && (
+                            <>
+                              <Button type="button" onClick={takePhoto}>
+                                <Camera className="mr-2 h-4 w-4" />
+                                Take Photo
+                              </Button>
+                              <Button type="button" variant="outline" onClick={stopCamera}>
+                                Cancel
+                              </Button>
+                            </>
+                          )}
+
+                          {showCamera && hasCameraPermission === false && (
+                            <Alert variant="destructive">
+                              <Camera className="h-4 w-4" />
+                              <AlertTitle>Camera Access Required</AlertTitle>
+                              <AlertDescription>
+                                Please allow camera access in your browser to take a photo, or use the upload option instead.
+                              </AlertDescription>
+                            </Alert>
+                          )}
+
+                          {showCamera && hasCameraPermission === null && (
+                            <div className="flex items-center justify-center p-4 space-x-2 text-muted-foreground">
+                              <Loader2 className="h-5 w-5 animate-spin" />
+                              <span>Requesting camera access...</span>
+                            </div>
+                          )}
+
+                          {watchedPhoto && (
+                            <>
+                              <Button type="button" onClick={() => fileInputRef.current?.click()} variant="outline">
+                                <Upload className="mr-2 h-4 w-4" />
+                                Change Photo
+                              </Button>
+                              <Button type="button" variant="outline" onClick={startCamera}>
+                                <Camera className="mr-2 h-4 w-4" />
+                                Take New Photo
+                              </Button>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Hidden File Input */}
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/jpeg,image/jpg,image/png,image/webp"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
                       </CardContent>
                     </Card>
                     <FormMessage />
                   </FormItem>
                 )} />
                 
-                 <canvas ref={canvasRef} className="hidden" />
+                <canvas ref={canvasRef} className="hidden" />
 
                 <Button type="submit" className="w-full text-lg py-6" disabled={isLoading}>
-                  {isLoading ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...</>) : "Complete Registration"}
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    "Complete Registration"
+                  )}
                 </Button>
               </form>
             </Form>
