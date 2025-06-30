@@ -23,47 +23,6 @@ import { saveRegistration } from "@/actions/save-registration";
 import ETicket from "@/components/e-ticket";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Print styles to hide everything except the ticket
-const printStyles = `
-  @media print {
-    /* Hide everything by default */
-    body * {
-      visibility: hidden;
-    }
-    
-    /* Show only the ticket container and its children */
-    .print-ticket, .print-ticket * {
-      visibility: visible;
-    }
-    
-    /* Position the ticket at the top of the page */
-    .print-ticket {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-    }
-    
-    /* Hide browser headers/footers */
-    @page {
-      margin: 0;
-      size: auto;
-    }
-    
-    /* Hide other elements that might interfere */
-    .no-print {
-      display: none !important;
-    }
-    
-    /* Ensure ticket content is properly sized for print */
-    .print-ticket {
-      transform: none !important;
-      max-width: none !important;
-      box-shadow: none !important;
-    }
-  }
-`;
-
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email." }),
@@ -240,9 +199,6 @@ export default function RegistrationForm() {
 
   return (
     <>
-      {/* Print Styles */}
-      <style jsx global>{printStyles}</style>
-      
       {/* Animated Thank You Overlay */}
       <AnimatePresence>
         {showSuccessMessage && (
@@ -266,22 +222,20 @@ export default function RegistrationForm() {
 
       {isSubmitted && formData && generatedPhotoUrl ? (
         <div className="space-y-6">
-          <div className="print-ticket">
-            <ETicket
-              name={formData.name}
-              college={formData.college}
-              photoUrl={generatedPhotoUrl}
-              qrData={JSON.stringify({
-                name: formData.name,
-                email: formData.email,
-                college: formData.college,
-                ticketId,
-                eventId: "FV2025",
-              })}
-              ticketId={ticketId}
-            />
-          </div>
-          <div className="text-center no-print">
+          <ETicket
+            name={formData.name}
+            college={formData.college}
+            photoUrl={generatedPhotoUrl}
+            qrData={JSON.stringify({
+              name: formData.name,
+              email: formData.email,
+              college: formData.college,
+              ticketId,
+              eventId: "FV2025",
+            })}
+            ticketId={ticketId}
+          />
+          <div className="text-center">
             <Button onClick={() => window.print()}>Print E-Ticket</Button>
           </div>
         </div>
