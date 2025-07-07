@@ -9,7 +9,10 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="text-center sm:text-left">
           <h3 className="font-bold text-lg">FestVerse 2025</h3>
-          <p className="text-sm text-muted-foreground">Where Innovation Meets Celebration</p>
+          <p className="text-sm text-muted-foreground">
+  Made by <a href="https://jayanthpara.vercel.app/" target="_blank" rel="noopener noreferrer"><strong className="text-blue-500">Jayanth Para</strong></a>
+</p>
+
           <p className="text-xs text-muted-foreground mt-1">&copy; {new Date().getFullYear()} FestVerse. All rights reserved.</p>
         </div>
         <div className="flex space-x-4">
