@@ -60,15 +60,16 @@ export default function Home() {
     { q: "Who can participate?", a: "The event is open to all undergraduate and postgraduate students from any stream." },
     { q: "Is there a registration fee?", a: "Yes, there is a nominal registration fee. Please check the registration page for details." },
     { q: "Can I participate alone?", a: "Yes, you can participate as an individual. We also have team formation sessions at the beginning of the event." },
-    { q: "Are accommodation and food provided?", a: "Food and snacks will be provided throughout the event. Accommodation can be arranged on request for outstation participants." },
+    { q: "Stay and food provided?", a: "Food and snacks will be provided throughout the event. Accommodation can be arranged on request for outstation participants." },
+    
   ];
 
   const sponsors = [
     { name: "Sponsor 1", logo: "https://i.ibb.co/HpqnbwQZ/alogo.png", dataAiHint: "amazon logo" },
-    { name: "Sponsor 2", logo: "https://i.ibb.co/4w16JG3Y/tlogo.png", dataAiHint: "tcs logo" },
+    { name: "Sponsor 2", logo: "https://iili.io/FENfsWv.png", dataAiHint: "tcs logo" },
    
     { name: "Sponsor 4", logo: "https://i.ibb.co/PyWD9C0/nlogo.png", dataAiHint: "Netflix logo" },
-    { name: "Sponsor 5", logo: "https://i.ibb.co/cX6Mjrsk/mlogo.png", dataAiHint: "Meta logo" },
+    { name: "Sponsor 5", logo: "https://iili.io/FEOR3Yb.png", dataAiHint: "Meta logo" },
     { name: "Sponsor 6", logo: "https://i.ibb.co/DHffzf9Y/glogo.webp", dataAiHint: "Google company" },
   ];
 
