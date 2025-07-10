@@ -5,7 +5,7 @@ import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-background py-12 border-t border-border mt-12">
+    <footer className="w-full bg-background py-12 border-t border-border mt-12 pb-28 sm:pb-3 "  >
       <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="text-center sm:text-left">
           <h3 className="font-bold text-lg">FestVerse 2025</h3>

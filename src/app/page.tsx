@@ -64,12 +64,12 @@ export default function Home() {
   ];
 
   const sponsors = [
-    { name: "Sponsor 1", logo: "https://i.ibb.co/HpqnbwQZ/alogo.png", dataAiHint: "tech logo" },
-    { name: "Sponsor 2", logo: "https://i.ibb.co/4w16JG3Y/tlogo.png", dataAiHint: "startup logo" },
-    { name: "Sponsor 3", logo: "https://i.ibb.co/Xrypbztn/ttlogo.png", dataAiHint: "company logo" },
-    { name: "Sponsor 4", logo: "https://i.ibb.co/PyWD9C0/nlogo.png", dataAiHint: "brand logo" },
-    { name: "Sponsor 5", logo: "https://i.ibb.co/cX6Mjrsk/mlogo.png", dataAiHint: "software logo" },
-    { name: "Sponsor 6", logo: "https://i.ibb.co/DHffzf9Y/glogo.webp", dataAiHint: "tech company" },
+    { name: "Sponsor 1", logo: "https://i.ibb.co/HpqnbwQZ/alogo.png", dataAiHint: "amazon logo" },
+    { name: "Sponsor 2", logo: "https://i.ibb.co/4w16JG3Y/tlogo.png", dataAiHint: "tcs logo" },
+   
+    { name: "Sponsor 4", logo: "https://i.ibb.co/PyWD9C0/nlogo.png", dataAiHint: "Netflix logo" },
+    { name: "Sponsor 5", logo: "https://i.ibb.co/cX6Mjrsk/mlogo.png", dataAiHint: "Meta logo" },
+    { name: "Sponsor 6", logo: "https://i.ibb.co/DHffzf9Y/glogo.webp", dataAiHint: "Google company" },
   ];
 
   return (
